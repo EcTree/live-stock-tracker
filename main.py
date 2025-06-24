@@ -22,6 +22,18 @@ symbol = st.text_input("Enter stock symbol (e.g. AAPL)", value="AAPL")
 
 if st.button("Load Candlestick Chart"):
     data = get_candlestick_data(symbol.upper())
+import plotly.graph_objects as go
+
+...
+
+fig = go.Figure(data=[go.Candlestick(
+    x=df['time'],
+    open=df['open'],
+    high=df['high'],
+    low=df['low'],
+    close=df['close']
+)])
+st.plotly_chart(fig)
 
     if data and data['s'] == 'ok':
         fig = go.Figure(data=[go.Candlestick(
