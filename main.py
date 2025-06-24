@@ -8,7 +8,7 @@ finnhub_client = finnhub.Client(api_key="d0qc4k1r01qt60onfn00d0qc4k1r01qt60onfn0
 
 # Streamlit setup
 st.set_page_config(layout="wide")
-st.title("💰 Live Stock Tracker")
+st.title(" Live Stock Tracker")
 
 # Settings
 symbol = "AAPL"
