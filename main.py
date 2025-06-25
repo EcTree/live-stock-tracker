@@ -9,11 +9,11 @@ finnhub_key = "d0qc4k1r01qt60onfn00d0qc4k1r01qt60onfn0g"
 finnhub_client = finnhub.Client(api_key=finnhub_key)
 
 # Get stock data (candles)
-def get_candlestick_data(symbol, resolution='1', count=30):
-now = int(time.time())
-past = now - count * 60 # 60 minutes back if resolution is 1 minute
-candles = finnhub_client.stock_candles(symbol, resolution, past, now)
-return candles
+def   get_candlestick_data(symbol, resolution='1', count=30):
+      now = int(time.time())
+      past = now - count * 60 # 60 minutes back if resolution is 1 minute
+      candles = finnhub_client.stock_candles(symbol, resolution, past, now)
+      return candles
 
 # Streamlit app
 st.title("📉 Live Candlestick Chart")
