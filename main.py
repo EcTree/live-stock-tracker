@@ -61,5 +61,4 @@ if symbol:
         )
         st.plotly_chart(fig, use_container_width=True)
     else:
-        https://linkprotect.cudasvc.com/url?a=https%3a%2f%2fst.info&c=E,1,f4j6v4cuSsActmT5GT4uO3ev73oquI
-SJLu4gcY-W1Me3H-_7yvshuiFDkN3B6cwgT6kHH6tYtqG5YBEitdaaa62u02Uo6NOFeO9CRdzsMxmCHM0m0YQKQOZRPhs,&typo=1("No data available yet. Try a different symbol or timeframe.")
+        
