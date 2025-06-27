@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 import time
 
 # Finnhub client
-api_key = "YOUR_FINNHUB_API_KEY"
+api_key = "d0qc4k1r01qt60onfn00d0qc4k1r01qt60onfn0g"
 finnhub_client = finnhub.Client(api_key=api_key)
 
 # Streamlit UI
