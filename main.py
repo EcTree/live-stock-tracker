@@ -2,7 +2,7 @@ import streamlit as st
 import plotly.graph_objects as go
 import datetime
 import time
-import finnhub
+import finnhub 
 
 # ⚠️ Replace this with your actual API key
 finnhub_key = "d0qc4k1r01qt60onfn00d0qc4k1r01qt60onfn0g"
