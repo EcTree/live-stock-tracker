@@ -1,88 +1,65 @@
 import streamlit as st
-import finnhub
 import plotly.graph_objects as go
-from datetime import datetime, timedelta
-import time
+from datetime import datetime
+import finnhub
 
-# Finnhub client
-api_key = "d0qc4k1r01qt60onfn00d0qc4k1r01qt60onfn0g"
+# Your Finnhub API key
+api_key = "d0qc4k1r01qt60onfn00d0qc4k1r01qt60onfn0g"  # ← replace this with your real key
+
+# Initialize Finnhub client
 finnhub_client = finnhub.Client(api_key=api_key)
 
-# Streamlit UI
-st.title("📈 Live Stock Tracker")
+# Function to get candlestick data
+def get_candles(symbol, resolution='5', lookback_minutes=30):
+    try:
+        end_time = int(datetime.utcnow().timestamp())
+        start_time = end_time - lookback_minutes * 60
 
-symbol = "AAPL"  # Change this to your desired stock
-st.write(f"Tracking live price for: **{symbol}**")
+        candles = finnhub_client.stock_candles(
+            symbol,
+            resolution,
+            start_time,
+            end_time
+        )
 
-# Storage for previous prices
-price_history = []
+        if candles and candles.get("s") == "ok":
+            return candles
+        else:
+            st.error(f"Finnhub returned error: {candles}")
+            return None
 
-# Function to fetch current price
-def get_current_price(symbol):
-    quote = finnhub_client.quote(symbol)
-    return quote['c']  # Current price
-
-# Function to fetch historical candles
-def get_candles(symbol, resolution='1', lookback_minutes=60):
-    end_time = int(datetime.utcnow().timestamp())
-    start_time = end_time - lookback_minutes * 60
-    candles = finnhub_client.stock_candles(symbol, resolution, start_time, end_time)
-
-    if candles and candles.get("s") == "ok":
-        return candles
-    else:
+    except Exception as e:
+        st.error(f"Exception from Finnhub: {e}")
         return None
 
-# Draw candlestick chart
-def plot_candlestick(candles):
-    fig = go.Figure(data=[
-        go.Candlestick(
-            x=[datetime.utcfromtimestamp(t) for t in candles['t']],
-            open=candles['o'],
-            high=candles['h'],
-            low=candles['l'],
-            close=candles['c']
+# Streamlit App
+st.title("📈 Live Stock Tracker")
+
+symbol = st.text_input("Enter a stock symbol:", value="AAPL")
+
+if symbol:
+    candles_data = get_candles(symbol)
+
+    if candles_data:
+        # Prepare data for candlestick chart
+        times = [datetime.fromtimestamp(ts) for ts in candles_data["t"]]
+
+        fig = go.Figure(
+            data=[
+                go.Candlestick(
+                    x=times,
+                    open=candles_data["o"],
+                    high=candles_data["h"],
+                    low=candles_data["l"],
+                    close=candles_data["c"]
+                )
+            ]
         )
-    ])
-    fig.update_layout(title=f"Candlestick Chart for {symbol}",
-                      xaxis_title="Time (UTC)",
-                      yaxis_title="Price ($)",
-                      height=500)
-    st.plotly_chart(fig)
-
-# Get historical candles once
-candles_data = get_candles(symbol)
-if candles_data:
-    plot_candlestick(candles_data)
-else:
-    st.warning("No candle data available.")
-
-# Live price loop
-placeholder = st.empty()
-
-while True:
-    price = get_current_price(symbol)
-    price_history.append(price)
-
-    # Only keep last 30 ticks
-    price_history = price_history[-30:]
-
-    message = f"💰 Live Price: **${price:.2f}**"
-
-    if len(price_history) >= 2:
-        # Compare to price 20 seconds ago (or the oldest available)
-        compare_price = price_history[0]
-        pct_change = ((price - compare_price) / compare_price) * 100
-
-        # Check thresholds
-        if pct_change >= 1.0:
-            message += f" 🚀 **Strong Surge (+{pct_change:.2f}%)**"
-        elif pct_change >= 0.5:
-            message += f" 📊 **Mild Rise (+{pct_change:.2f}%)**"
-        elif pct_change <= -1.0:
-            message += f" 📉 **Sharp Drop ({pct_change:.2f}%)**"
-        elif pct_change <= -0.5:
-            message += f" ⚠️ **Mild Drop ({pct_change:.2f}%)**"
-
-    placeholder.markdown(message)
-    time.sleep(5)
+        fig.update_layout(
+            title=f"{symbol.upper()} - Candlestick Chart",
+            xaxis_rangeslider_visible=False
+        )
+        st.plotly_chart(fig, use_container_width=True)
+    else:
+        https://linkprotect.cudasvc.com/url?a=https%3a%2f%2fst.info&c=E,1,f4j6v4cuSsActmT5GT4uO3ev73oquI
+SJLu4gcY-W1Me3H-_7yvshuiFDkN3B6cwgT6kHH6tYtqG5YBEitdaaa62u02Uo6NOFeO9CRdzsMxmCHM0m0YQKQOZRPhs,&typo=1("No data available yet. Try a different symbol or timeframe.")
