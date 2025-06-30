@@ -1,65 +1,41 @@
+
 import streamlit as st
+import yfinance as yf
 import plotly.graph_objects as go
-from datetime import datetime
-import finnhub
 
-# Your Finnhub API key
-api_key = "d0qc4k1r01qt60onfn00d0qc4k1r01qt60onfn0g"  # ← replace this with your real key
+st.set_page_config(page_title="Live Stock Tracker")
 
-# Initialize Finnhub client
-finnhub_client = finnhub.Client(api_key=api_key)
-
-# Function to get candlestick data
-def get_candles(symbol, resolution='5', lookback_minutes=30):
-    try:
-        end_time = int(datetime.utcnow().timestamp())
-        start_time = end_time - lookback_minutes * 60
-
-        candles = finnhub_client.stock_candles(
-            symbol,
-            resolution,
-            start_time,
-            end_time
-        )
-
-        if candles and candles.get("s") == "ok":
-            return candles
-        else:
-            st.error(f"Finnhub returned error: {candles}")
-            return None
-
-    except Exception as e:
-        st.error(f"Exception from Finnhub: {e}")
-        return None
-
-# Streamlit App
 st.title("📈 Live Stock Tracker")
 
-symbol = st.text_input("Enter a stock symbol:", value="AAPL")
+symbol = st.text_input("Enter a stock symbol (e.g. AAPL):")
 
 if symbol:
-    candles_data = get_candles(symbol)
-
-    if candles_data:
-        # Prepare data for candlestick chart
-        times = [datetime.fromtimestamp(ts) for ts in candles_data["t"]]
-
-        fig = go.Figure(
-            data=[
-                go.Candlestick(
-                    x=times,
-                    open=candles_data["o"],
-                    high=candles_data["h"],
-                    low=candles_data["l"],
-                    close=candles_data["c"]
-                )
-            ]
+    try:
+        # Download intraday data (1-minute) for today
+        df = https://linkprotect.cudasvc.com/url?a=https%3a%2f%2fyf.download&c=E,1,QYM5D2c4naQJrftbbYap8gPkP8S4_KihRRGZkaXomP2QthQ0BpFjSC2qhrMIVnycCpD-Bqw9bI4UOsByM9niSmNndAuzx_bTYv0ecIxL7owNETq8Y9HeAyKBqg,,&typo=1(
+            tickers=symbol,
+            interval="1m",
+            period="1d",
+            progress=False,
         )
-        fig.update_layout(
-            title=f"{symbol.upper()} - Candlestick Chart",
-            xaxis_rangeslider_visible=False
-        )
-        st.plotly_chart(fig, use_container_width=True)
-    else:
-        st.error(...)
-        
+
+        if not df.empty:
+            fig = go.Figure(data=go.Candlestick(
+                x=df.index,
+                open=df["Open"],
+                high=df["High"],
+                low=df["Low"],
+                close=df["Close"]
+            ))
+
+            fig.update_layout(
+                title=f"{symbol.upper()} - 1m Candlestick Chart",
+                xaxis_rangeslider_visible=False
+            )
+
+            st.plotly_chart(fig, use_container_width=True)
+        else:
+            st.warning("No data found. The market might be closed, or the symbol is invalid.")
+
+    except Exception as e:
+        st.error(f"Error fetching data: {e}")
