@@ -1,4 +1,3 @@
-
 import streamlit as st
 import yfinance as yf
 import plotly.graph_objects as go
@@ -11,9 +10,7 @@ symbol = st.text_input("Enter a stock symbol (e.g. AAPL):")
 
 if symbol:
     try:
-        # Download intraday data (1-minute) for today
-        df = https://linkprotect.cudasvc.com/url?a=https%3a%2f%2fyf.download&c=E,1,QYM5D2c4naQJrftbbYap8gPkP8S4_KihRRGZkaXomP2QthQ0BpFjSC2qhrMIVnycCpD-Bqw9bI4UOsByM9niSmNndAuzx_bTYv0ecIxL7owNETq8Y9HeAyKBqg,,&typo=1(
-            tickers=symbol,
+        df = yf.download(
             interval="1m",
             period="1d",
             progress=False,
@@ -36,6 +33,7 @@ if symbol:
             st.plotly_chart(fig, use_container_width=True)
         else:
             st.warning("No data found. The market might be closed, or the symbol is invalid.")
-
     except Exception as e:
         st.error(f"Error fetching data: {e}")
+else:
+   st.info("Enter a stock symbol to view the chart.")
