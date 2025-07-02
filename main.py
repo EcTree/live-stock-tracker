@@ -13,7 +13,7 @@ if symbol:
         df = yf.download(
             tickers=symbol,
             interval="1m",
-            period="1d",
+            period="5d",
             progress=False,
         )
 
