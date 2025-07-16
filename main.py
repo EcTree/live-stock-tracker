@@ -21,8 +21,9 @@ if symbol:
         if df.empty:
             st.warning("No data found. The market might be closed right now, or the symbol is invalid.")
         else:
-            # Fix column names to remove duplicate symbol name
-            df.columns = [col.split(" ")[-1] for col in df.columns]
+            # FIX: Remove ticker from column names if using MultiIndex
+            if isinstance(df.columns[0], tuple):
+                df.columns = [col[1] for col in df.columns]
 
             st.subheader(f"{symbol.upper()} Data (1-Minute Interval)")
             st.dataframe(df)
