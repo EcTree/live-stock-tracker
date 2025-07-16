@@ -11,6 +11,7 @@ symbol = st.text_input("Enter a stock symbol (e.g. AAPL):")
 if symbol:
     try:
         df = yf.download(
+            tickers=symbol,
             interval="1m",
             period="1d",
             progress=False
