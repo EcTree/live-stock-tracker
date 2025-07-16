@@ -23,6 +23,11 @@ if symbol:
             # FIX: Remove ticker prefix if using MultiIndex columns
             if isinstance(df.columns[0], tuple):
                 df.columns = [col[1] for col in df.columns]
+            if df.empty:
+                st.warning("No data found. The market might be closed right now, or the symbol is invalid.")
+            else:
+                st.dataframe(df)
+                ...    
 
             st.subheader(f"{symbol.upper()} Data (1-Minute Interval)")
             st.dataframe(df)
