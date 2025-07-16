@@ -10,9 +10,7 @@ symbol = st.text_input("Enter a stock symbol (e.g. AAPL):")
 
 if symbol:
     try:
-        # Download intraday data
         df = yf.download(
-            symbol,
             interval="1m",
             period="1d",
             progress=False
@@ -21,14 +19,13 @@ if symbol:
         if df.empty:
             st.warning("No data found. The market might be closed right now, or the symbol is invalid.")
         else:
-            # FIX: Remove ticker from column names if using MultiIndex
+            # FIX: Remove ticker prefix if using MultiIndex columns
             if isinstance(df.columns[0], tuple):
                 df.columns = [col[1] for col in df.columns]
 
             st.subheader(f"{symbol.upper()} Data (1-Minute Interval)")
             st.dataframe(df)
 
-            # Create candlestick chart
             fig = go.Figure(
                 data=[
                     go.Candlestick(
@@ -51,4 +48,4 @@ if symbol:
     except Exception as e:
         st.error(f"Error fetching data: {e}")
 else:
-    st.info("Please enter a stock symbol above.")
+   st.info("Please enter a stock symbol above.")
