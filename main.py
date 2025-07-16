@@ -11,7 +11,7 @@ symbol = st.text_input("Enter a stock symbol (e.g. AAPL):")
 if symbol:
     # Check if market is open
     eastern = pytz.timezone("US/Eastern")
-    now_est = https://linkprotect.cudasvc.com/url?a=https%3a%2f%2fdatetime.now&c=E,1,FN16rZiQy_NRl9eg0-ii8HD52q5aj1C2Fuv2fzdH8NfO3mHNpAYbU-llXILMRYN_5YaeAB4zSNqJTIlS33dhMHSkfR32n0C7ygZaI1i8U2CoG-DVb-E,&typo=1(eastern)
+    now_est = datetime.now(eastern)
     market_open = now_est.replace(hour=9, minute=30, second=0, microsecond=0)
     market_close = now_est.replace(hour=16, minute=0, second=0, microsecond=0)
 
