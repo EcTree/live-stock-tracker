@@ -24,6 +24,8 @@ if symbol:
 
     try:
         df = yf.download(
+            # Clean up column names to remove ticker prefix like "AAPL Open"
+df.columns = [col.split(" ")[-1] for col in df.columns]
             tickers=symbol,
             interval=interval,
             period=period,
