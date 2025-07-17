@@ -4,20 +4,19 @@ import pandas as pd
 import plotly.graph_objects as go
 import time
 
-st.set_page_config(page_title="📊 Stock Tracker", layout="wide")
+st.set_page_config(page_title="📊 Live Stock Tracker", layout="wide")
 
 st.title("📈 Live Stock Tracker")
 
 ticker_symbol = st.text_input("Enter Stock Symbol (e.g. AAPL):", "AAPL").upper()
 
-interval = "1m"  # One-minute interval
-lookback_minutes = 5  # Total minutes of data to keep in memory
-fetch_interval = 5  # Seconds between fetches
+interval = "1m"  # 1-minute interval
+lookback_limit = 30  # How many ticks (price points) to remember
+fetch_interval = 5  # Seconds between updates
 
-# Store price history
 price_history = []
 
-# Emoji thresholds
+# Emoji rules
 def get_movement_emoji(pct_change):
     if pct_change >= 1.0:
         return "🚀 Strong Surge"
@@ -27,11 +26,10 @@ def get_movement_emoji(pct_change):
         return "📉 Sharp Drop"
     elif pct_change <= -0.5:
         return "⚠️ Mild Drop"
-    else:
-        return ""
+    return ""
 
-# Fetch latest price
-def fetch_latest_price(ticker):
+# Fetch data
+def fetch_data(symbol):
     try:
         df = yf.download(tickers=tickers, period="1d", interval=interval, progress=False)
         df = df.reset_index()
@@ -41,8 +39,8 @@ def fetch_latest_price(ticker):
         st.error(f"Error fetching data: {e}")
         return None
 
-# Plot candlestick chart
-def plot_candles(df):
+# Candlestick chart
+def plot_candlestick(df):
     fig = go.Figure(data=[go.Candlestick(
         x=df["Datetime"],
         open=df["Open"],
@@ -58,39 +56,38 @@ def plot_candles(df):
     )
     return fig
 
-# Main loop
-placeholder = st.empty()
+# Live UI
+price_placeholder = st.empty()
+alerts_placeholder = st.empty()
 chart_placeholder = st.empty()
 
 while True:
-    data = fetch_latest_price(ticker_symbol)
-    if data is not None and not data.empty:
-        latest_row = data.iloc[-1]
-        current_price = latest_row["Close"]
-        current_time = latest_row["Datetime"]
+    df = fetch_data(ticker_symbol)
+    if df is not None and not df.empty:
+        latest = df.iloc[-1]
+        current_price = latest["Close"]
+        current_time = latest["Datetime"]
 
         price_history.append((current_time, current_price))
-        if len(price_history) > 30:
+        if len(price_history) > lookback_limit:
             price_history.pop(0)
 
-        # Calculate change from earlier prices
-        display_lines = []
-        for i in range(1, min(5, len(price_history)) + 1):
+        price_placeholder.markdown(f"### 💰 {ticker_symbol} Current Price: **${current_price:.2f}**")
+
+        # Check movement
+        movements = []
+        for i in range(1, min(5, len(price_history))):
             past_time, past_price = price_history[-i - 1]
             pct_change = ((current_price - past_price) / past_price) * 100
             emoji = get_movement_emoji(pct_change)
             if emoji:
-                line = f"{past_time.strftime('%H:%M:%S')} → {current_time.strftime('%H:%M:%S')} | {pct_change:.2f}% {emoji}"
-                display_lines.append(line)
+                movements.append(f"{past_time.strftime('%H:%M:%S')} → {current_time.strftime('%H:%M:%S')} | {pct_change:.2f}% {emoji}")
 
-        with placeholder.container():
-            st.markdown(f"### 💰 {ticker_symbol} Current Price: **${current_price:.2f}**")
-            if display_lines:
-                st.markdown("#### Significant Movement:")
-                for line in display_lines:
-                    st.markdown(line)
+        if movements:
+            alerts_placeholder.markdown("#### Significant Movement:")
+            for m in movements:
+                alerts_placeholder.markdown(m)
 
-        with chart_placeholder.container():
-            st.plotly_chart(plot_candles(data), use_container_width=True)
+        chart_placeholder.plotly_chart(plot_candlestick(df), use_container_width=True)
 
     time.sleep(fetch_interval)
