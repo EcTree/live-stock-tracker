@@ -11,10 +11,10 @@ if symbol:
     try:
         # Fetch data
         df = yf.download(tickers=tickers, period="1d", interval=interval, progress=False)
-            tickers=symbol,
-            interval="1m",
-            period="1d",
-            progress=False
+        tickers=symbol,
+        interval="1m",
+        period="1d",
+        progress=False
         )
 
         if df.empty:
