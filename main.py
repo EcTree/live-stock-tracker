@@ -20,12 +20,11 @@ if symbol:
         if df.empty:
             st.warning("No data found. The market might be closed right now, or the symbol is invalid.")
         else:
-            
             # Fix for multi-index or duplicate columns
-if isinstance(df.columns[0], tuple):
-    df.columns = [col[1] if isinstance(col, tuple) else col for col in df.columns]
-elif df.columns.duplicated().any():
-    df = df.loc[:, ~df.columns.duplicated()]
+            if isinstance(df.columns[0], tuple):
+                df.columns = [col[1] if isinstance(col, tuple) else col for col in df.columns]
+            elif df.columns.duplicated().any():
+                df = df.loc[:, ~df.columns.duplicated()]
 
             st.subheader(f"{symbol.upper()} Data (1-Minute Interval)")
             st.dataframe(df)
