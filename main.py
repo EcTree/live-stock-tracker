@@ -9,7 +9,6 @@ symbol = st.text_input("Enter a stock symbol (e.g. AAPL):")
 
 if symbol:
     try:
-        # ✅ Correct usage of 'symbol' instead of undefined 'tickers'
         df = yf.download(
             tickers=symbol,
             period="1d",
@@ -20,11 +19,12 @@ if symbol:
         if df.empty:
             st.warning("No data found. The market might be closed right now, or the symbol is invalid.")
         else:
-            # ✅ Handle multi-index or duplicate columns
-            if isinstance(df.columns[0], tuple):
-                df.columns = [col[1] if isinstance(col, tuple) else col for col in df.columns]
-            elif df.columns.duplicated().any():
-                df = df.loc[:, ~df.columns.duplicated()]
+            # ✅ FIX: If data is nested under the ticker name (e.g. df["AAPL"]), extract it
+            if symbol.upper() in df.columns.get_level_values(0):
+                df = df[symbol.upper()]  # unnest the dataframe
+
+            # ✅ Remove duplicate columns if any remain
+            df = df.loc[:, ~df.columns.duplicated()]
 
             st.subheader(f"{symbol.upper()} Data (1-Minute Interval)")
             st.dataframe(df)
@@ -51,4 +51,4 @@ if symbol:
     except Exception as e:
         st.error(f"Error fetching data: {e}")
 else:
-    st.info("Please enter a stock symbol above.")
+   st.info("Please enter a stock symbol above.")
