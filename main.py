@@ -1,7 +1,7 @@
 import streamlit as st
 import yfinance as yf
 import plotly.graph_objects as go
-from streamlit_autorefresh import st_autorefresh
+from streamlit_extras.st_autorefresh import st_autorefresh
 
 # Auto-refresh every 60 seconds
 st_autorefresh(interval=60 * 1000, key="datarefresh")
