@@ -13,6 +13,11 @@ def get_data(ticker):
     try:
         data = yf.download(ticker, period="1d", interval="1m")
         data = data.reset_index()
+
+        # ✅ Flatten multi-index columns if they exist
+        if isinstance(data.columns, pd.MultiIndex):
+            data.columns = [col[0] for col in data.columns]
+
         return data
     except Exception as e:
         st.error(f"Error fetching data: {e}")
@@ -26,7 +31,7 @@ if ticker:
         st.subheader(f"{ticker} Data (1-Minute Interval)")
         st.dataframe(data.tail())
 
-        # Candlestick chart
+        # ✅ Candlestick chart
         st.subheader(f"{ticker} Candlestick Chart (1m)")
         fig = go.Figure(data=[go.Candlestick(
             x=data['Datetime'],
@@ -36,14 +41,14 @@ if ticker:
             close=data['Close']
         )])
         fig.update_layout(xaxis_rangeslider_visible=False, height=500, width=900)
-        st.plotly_chart(fig)
+        st.plotly_chart(fig, use_container_width=True)
 
-        # Refresh button
+        # ✅ Refresh button
         if st.button("🔄 Refresh Now"):
-            st.rerun()  # ✅ updated from st.experimental_rerun()
+            st.rerun()
 
-        # Auto refresh every 60 seconds
+        # ✅ Auto refresh every 60 seconds
         time.sleep(60)
-        st.rerun()  # ✅ updated here too
+        st.rerun()
     else:
         st.warning("No data available for this ticker.")
