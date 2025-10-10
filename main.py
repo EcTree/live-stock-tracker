@@ -11,7 +11,7 @@ ticker = st.text_input("Enter a stock symbol (e.g., AAPL):", "AAPL").upper()
 
 def get_data(ticker):
     try:
-        data = yf.download( ticker, period="1d", interval="1m")
+        data = yf.download(ticker, period="1d", interval="1m")
         data = data.reset_index()
         return data
     except Exception as e:
@@ -40,10 +40,10 @@ if ticker:
 
         # Refresh button
         if st.button("🔄 Refresh Now"):
-            st.experimental_rerun()
+            st.rerun()  # ✅ updated from st.experimental_rerun()
 
         # Auto refresh every 60 seconds
         time.sleep(60)
-        st.experimental_rerun()
+        st.rerun()  # ✅ updated here too
     else:
         st.warning("No data available for this ticker.")
