@@ -35,7 +35,7 @@ def get_data(ticker):
 def detect_patterns(df):
     patterns = []
     if len(df) < 3:
-    return patterns
+        return patterns
     
     last = df.iloc[-1]
     prev = df.iloc[-2]
