@@ -17,9 +17,9 @@ if "last_pattern_time" not in st.session_state:
   st.session_state.last_pattern_time = None
 
 def get_data(ticker):
-try:
-data = yf.download(ticker, period="1d", interval="1m")
-data = data.reset_index()
+  try:
+  data = yf.download(ticker, period="1d", interval="1m")
+  data = data.reset_index()
 
 # Flatten multi-index columns if they exist
 if isinstance(data.columns, pd.MultiIndex):
