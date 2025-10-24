@@ -21,14 +21,14 @@ def get_data(ticker):
     data = yf.download(ticker, period="1d", interval="1m")
     data = data.reset_index()
 
-# ✅ Flatten multi-index columns if they exist
-if isinstance(data.columns, pd.MultiIndex):
-data.columns = [col[0] for col in data.columns]
+    # ✅ Flatten multi-index columns if they exist
+    if isinstance(data.columns, pd.MultiIndex):
+      data.columns = [col[0] for col in data.columns]
 
-return data
+    return data
 except Exception as e:
-st.error(f"Error fetching data: {e}")
-return None
+    st.error(f"Error fetching data: {e}")
+    return None
 
 
 # Function to detect candlestick patterns
