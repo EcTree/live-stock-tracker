@@ -14,7 +14,7 @@ ticker = st.text_input("Enter a stock symbol (e.g., AAPL):", "AAPL").upper()
 
 # Store last detected pattern in session to only show new alerts
 if "last_pattern_time" not in st.session_state:
-st.session_state.last_pattern_time = None
+  st.session_state.last_pattern_time = None
 
 def get_data(ticker):
 try:
